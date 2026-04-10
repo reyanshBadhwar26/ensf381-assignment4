@@ -5,10 +5,13 @@ Group Members:
 """
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import bcrypt
 import re
 
+
 app = Flask(__name__)
+CORS(app)
 
 user_database = []
 
@@ -20,7 +23,7 @@ def signup():
     password = data.get('password')
 
     if not username or not email or not password:
-        return jsonify({"success": False, "message": "All fields are required"}), 400
+        return jsonify({"success": False, "message": "All fields are required"})
     
     errors = []
     if len(username) < 3 or len(username) > 20:
@@ -50,20 +53,60 @@ def signup():
     if not re.search(r'[!@#$%^&*(),.?\":{}|<>]', password):
         errors.append("Password must contain at least one special character")
 
+    if errors:
+        return jsonify({"success": False, "message": " | ".join(errors)})
+    
     for user in user_database:
         if user['username'] == username:
-            errors.append("Username already exists")
-            break
+            return jsonify({"success": False, "message": "Username is already taken"})
         if user['email'] == email:
-            errors.append("Email already exists")
-            break
+            return jsonify({"success": False, "message": "Email is already registered"})
 
-    if errors:
-        return jsonify({"success": False, "message": " | ".join(errors)}), 400
+    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
 
-    
-    
+    user_database.append({
+        "id": len(user_database) + 1,
+        "username": username,
+        "email": email,
+        "password_hash": hashed_password
+    })
 
+    return jsonify({"success": True, "message": "Registration successful"})
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+    message = {
+        "success" : False, 
+        "message" : "Invalid username or password."
+    }
+
+    for user in user_database:
+        if user["username"] == username:
+            if bcrypt.checkpw(password, user["password_hash"]):
+                message = {
+                    "success" : True, 
+                    "message" : "Login successful.", 
+                    "userId" : user["id"], 
+                    "username" : user["username"]
+                }
+
+    return jsonify(message)
+
+@app.route('/reviews', methods=['GET'])
+def get_reviews():
+    pass
+
+@app.route('/flavors', methods=['GET'])
+def get_flavors():
+    pass
+
+
+
+if __name__ == '__main__':
+    app.run()
 
 
 
