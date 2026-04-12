@@ -1,8 +1,7 @@
 import React from "react";
-import flavors from "../data/flavors";
 import FlavorItem from "./FlavorItem";
 
-function FlavorCatalog({addToOrder}){
+function FlavorCatalog({ flavors, addToOrder }){
 
 return(
 <>
@@ -12,7 +11,7 @@ return(
 
 {flavors.map(f=>(
 <FlavorItem
-key={f.id}
+key={f.flavorId}
 flavor={f}
 addToOrder={addToOrder}
 />

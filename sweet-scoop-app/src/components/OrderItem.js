@@ -7,7 +7,7 @@ function OrderItem({ item, removeFromOrder }) {
       <h4>{item.name}</h4>
       <p>Quantity: {item.quantity}</p>
       <p>Price: ${(item.price * item.quantity).toFixed(2)}</p>
-      <button onClick={() => removeFromOrder(item.id)}>Remove Item</button>
+      <button onClick={() => removeFromOrder(item.flavorId)}>Remove Item</button>
     </div>
   );
 }
