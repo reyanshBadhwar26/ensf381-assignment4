@@ -7,8 +7,10 @@ function Header() {
   const { user, logoutUser } = useContext(AuthContext);
 
   const handleLogout = () => {
-    logoutUser();
     navigate("/");
+    setTimeout(() => {
+      logoutUser();
+    }, 100);
   };
 
   return (
