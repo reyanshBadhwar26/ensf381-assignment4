@@ -6,9 +6,11 @@ import FlavorsPage from "./pages/FlavorsPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import OrderHistoryPage from "./pages/OrderHistoryPage";
+import AuthProvider from "./components/AuthContext";
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />} />
@@ -18,6 +20,7 @@ function App() {
         <Route path="/order-history" element={<OrderHistoryPage />} />
       </Routes>
     </Router>
+    </AuthProvider>
   );
 }
 

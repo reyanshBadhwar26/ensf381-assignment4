@@ -3,20 +3,19 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import LoginForm from "../components/LoginForm";
 
-function LoginPage(){
+function LoginPage() {
 
-return(
+    return (
 
-<div>
+        <div>
 
-<Header/>
-<LoginForm/>
+            <Header />
+            <LoginForm />
+            <Footer />
 
-<Footer/>
+        </div>
 
-</div>
-
-)
+    )
 
 }
 

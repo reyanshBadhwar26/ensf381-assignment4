@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AuthContext } from "./LoginForm";
+import { AuthContext } from "./AuthContext";
 import DisplayStatus from "./DisplayStatus";
 
 function AuthMessage() {

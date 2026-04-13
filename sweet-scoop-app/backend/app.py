@@ -75,7 +75,7 @@ def signup():
         "orders" : []
     })
 
-    return jsonify({"success": True, "message": "Registration successful"}), 200
+    return jsonify({"success": True, "message": "Registration successful."}), 200
 
 @app.route('/login', methods=['POST'])
 def login():

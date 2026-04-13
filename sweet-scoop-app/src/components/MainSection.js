@@ -1,62 +1,84 @@
 import React, {useState, useEffect} from "react";
-import flavors from "../data/flavors";
-import reviews from "../data/reviews";
 
-function MainSection(){
+function getRandomObjects(arr, n) {
+  const result = [];
 
-const [randomFlavors,setRandomFlavors] = useState([]);
-const [randomReviews,setRandomReviews] = useState([]);
+  while (result.length < n) {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    const randomItem = arr[randomIndex];
 
-useEffect(()=>{
+    if (!result.includes(randomItem)) {
+      result.push(randomItem);
+    }
+  }
 
-const shuffledFlavors=[...flavors].sort(()=>0.5-Math.random());
-setRandomFlavors(shuffledFlavors.slice(0,3));
-
-const shuffledReviews=[...reviews].sort(()=>0.5-Math.random());
-setRandomReviews(shuffledReviews.slice(0,2));
-
-},[])
-
-return(
-
-<div className="main-section">
-
-<h2>About Sweet Scoop</h2>
-<p className="about-text">
-Sweet Scoop offers a variety of delicious ice cream flavors made from fresh ingredients.
-</p>
-
-<h2>Featured Flavors</h2>
-
-<div className="featured-flavors">
-
-{randomFlavors.map(f=>(
-<div className="flavor-card" key={f.id}>
-<h4>{f.name}</h4>
-<p>{f.price}</p>
-</div>
-))}
-
-</div>
-
-<h2>Customer Reviews</h2>
-
-<div className="reviews">
-
-{randomReviews.map((r,i)=>(
-<div  key={i}>
-<h4>{r.customerName}</h4>
-<p>{r.review}</p>
-<p>{"★".repeat(r.rating)}</p>
-</div>
-))}
-
-</div>
-
-</div>
-
-)
-
+  return result;
 }
+
+function getRating(rating) {
+    const finalString = "★".repeat(rating) + "☆".repeat(5-rating);
+
+    return finalString;
+}
+
+function MainSection() {
+
+    const [featuredFlavors, setFeaturedFlavors] = useState([]);
+    const [featuredReviews, setfeaturedReviews] = useState([]);
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:5000/flavors")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setFeaturedFlavors(getRandomObjects(data.flavors, 3));
+                }
+            })
+            .catch(err => console.error("Failed to fetch flavors:", err));
+
+        fetch("http://127.0.0.1:5000/reviews")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setfeaturedReviews(data.reviews);
+                }
+            })
+            .catch(err => console.error("Failed to fetch reviews:", err));
+    }, []);
+
+    return (
+        <div className="main-section">
+            <section>
+                <h2>About Sweet Scoop Ice Cream</h2>
+                <p>Sweet Scoop Ice Cream is a family-owned business that has been serving delicious ice cream since 1990. We pride ourselves on using only the freshest ingredients to create our unique flavors. Whether you’re in the mood for a classic vanilla or something more adventurous like our signature “Chocolate Explosion,” we have something for everyone. Come visit us and treat yourself to a sweet scoop today!</p>
+            </section>
+
+            <h2>Featured Flavors</h2>
+            <div className="flavor-grid">
+                {featuredFlavors.map((flavor) =>
+                    <div className="flavor-card">
+                        <h3>{flavor.name}</h3>
+                        <p>{flavor.description}</p>
+                        <p>Price: {flavor.price}</p>
+                        <img src={flavor.image} alt={flavor.name}/>
+                    </div>
+                )}
+            </div>
+
+            <div>
+                <h2>Customer Reviews</h2>
+                {featuredReviews.map((review) =>
+                    <div>
+                        <h3>{review.customerName}</h3>
+                        <p>Rating: {getRating(review.rating)}</p>
+                        <p>{review.review}</p>
+                    </div>
+                )}
+            </div>
+
+        </div>
+    );
+}
+
 
 export default MainSection;
